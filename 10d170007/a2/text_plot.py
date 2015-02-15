@@ -20,15 +20,17 @@ find_max(z): Finds and returns the largest element in a list z
 
 make_list(lower,upper,size): Returns a list of length=size by discretizing all values between upper and lower
 
-make_sin_list(): Create 2 lists a,b for domain and range of sin x, return the two as lists
+make_sin_list(): Creates 2 lists a,b for domain and range of sin x. Return the two as lists
 
-rescale(n, size): scales each value of the list to an integer value corresponding to a value on the terminal screen(row or column). Returns a different list from the one provided to it
+rescale(n, size): Scales each value of the list n to an integer value corresponding to a value on the terminal screen(row or column). Returns a different list from the one provided to it
 
-sort(x,y): sort list x and then swap y accordingly to take care of the possibility that x may not be a sorted list
+sort(x,y): Sort list x and then swap y accordingly to take care of the possibility that x may not be a sorted list
 
-plot_print(x,y): print a star in row x, column y
+plot_print(x,y): Prints a star in column x, row y
 
-plot(x,y): Takes 2 lists and prints the corresponding plot on the terminal
+plot(x,y): Takes 2 lists and prints the corresponding plot on the terminal with x along the x axis and y along the y axis
+
+convert_to_list(p): Converts the input p to a list in case it is a tuple and leaves it unchanged if it is a list. Returns an error otherwise
 
 """
 
