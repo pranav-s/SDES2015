@@ -8,25 +8,27 @@ Args
 x- list
 y- list
 
-Functions :
+Functions:
 
 terminal_resize(r,c): Resizes the terminal based on given input value of rows and columns
 
-read_terminal_size(): Output the number of rows and columns in the current terminal. Returns 2 strings
+read_terminal_size(): Returns the number of rows and columns in the current terminal. Returns 2 strings
 
-find_min(z): Finds the smallest element in a list z
+find_min(z): Finds and returns the smallest element in a list z
 
-find_max(z): Finds the largest element in a list z
+find_max(z): Finds and returns the largest element in a list z
 
-make_list(lower,upper,size): Creates a list of length size by discretizing all values between upper and lower
+make_list(lower,upper,size): Returns a list of length=size by discretizing all values between upper and lower
 
 make_sin_list(): Create 2 lists a,b for domain and range of sin x, return the two as lists
 
-rescale(n, size): scales each value of the list to an integer value corresponding to the corresponding screen dimension, returns a different list
+rescale(n, size): scales each value of the list to an integer value corresponding to a value on the terminal screen(row or column). Returns a different list from the one provided to it
+
+sort(x,y): sort list x and then swap y accordingly to take care of the possibility that x may not be a sorted list
 
 plot_print(x,y): print a star in row x, column y
 
-plot(x,y): Takes 2 lists and prints the corresponding graph
+plot(x,y): Takes 2 lists and prints the corresponding plot on the terminal
 
 """
 
@@ -46,13 +48,25 @@ def plot(x,y):
      c=int(c)
      x=rescale(x,c)
      y=rescale(y,r)
-     os.system('clear')
+     os.system('clear') # Clears the screen before printing
      for i in range(len(x)):
          plot_print(x[i],r-y[i],r)
 
 def sort(x,y):
-     pass
-#sort list x and then swap y accordingly
+     if len(x)!=len(y):
+         return
+     for i in range(len(x)-1):
+         min=x[i]
+         index=i
+         for j in range(i+1,len(x)):
+             
+             if(x[j]<min):
+                   min=x[j]
+                   index=j
+         
+         if index!=i:
+             x[i],x[index]=x[index],x[i]
+             y[i],y[index]=y[index],y[i]
 
 def convert_to_list(p):
      if type(p)==list:
@@ -143,7 +157,7 @@ def make_sin_list():
         b.append(math.sin(i))
      return a,b
 
-if __name__=='__main__':
+if __name__=='__main__': #Prints the sine function to the screen when called from the terminal
      r,c=read_terminal_size()
      r=int(r)
      c=int(c)

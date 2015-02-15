@@ -1,13 +1,17 @@
 #!/usr/bin/env python
 
-from text_plot import find_min,find_max, rescale, terminal_resize, read_terminal_size, make_list, convert_to_list
+from text_plot import find_min,find_max, rescale, terminal_resize, make_list, convert_to_list,sort
 
 
 def test_rescale():
-     pass
+     assert rescale([1,3,5,7,9],5)==[0,1,2,3,4]
 
 def test_sort():
-     pass
+     x=[1,32,-1,4,23,6]
+     y=[1,2,3,4,5,6]
+     sort(x,y)
+     assert x==[-1,1,4,6,23,32]
+     assert y==[3,1,4,6,5,2]
 
 def test_convert_to_list():
      assert convert_to_list((1,2,2,3,5))==[1,2,2,3,5]
@@ -64,6 +68,13 @@ def test_errors():
           
      try :
           convert_to_list('dft')
+     except TypeError:
+        assert True
+     else:
+        assert False
+     
+     try :
+          convert_to_list(2)
      except TypeError:
         assert True
      else:
