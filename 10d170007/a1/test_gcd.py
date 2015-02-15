@@ -28,3 +28,49 @@ def test_random_cases():
      assert gcd(22,99)==11
      assert gcd(123432,78654)==6
      assert gcd(764896, 749784)==8
+
+def test_errors():
+     try:
+        gcd(5,-3)
+     except ValueError:
+        assert True
+     else :
+         assert False  
+
+     try:
+        gcd(-5,3)
+     except ValueError:
+        assert True
+     else :
+         assert False  
+
+     try:
+        gcd(7,'rty')
+     except TypeError:
+        assert True
+     else :
+         assert False  
+
+     try:
+        gcd('rty',10)
+     except TypeError:
+        assert True
+     else :
+         assert False  
+
+     try:
+        gcd(7,2.3)
+     except TypeError:
+        assert True
+     else :
+         assert False  
+
+     try:
+        gcd(2.5,10)
+     except TypeError:
+        assert True
+     else :
+         assert False  
+
+
+
