@@ -44,7 +44,7 @@ def plot(x,y):
      if len(x)!=len(y):
          print 'Incorrect Input data'
          return
-     sort(x,y)
+     #sort(x,y)
      r,c=read_terminal_size()
      r=int(r)
      c=int(c)
