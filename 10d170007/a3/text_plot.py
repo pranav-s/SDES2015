@@ -8,29 +8,15 @@ Args
 x- list
 y- list
 
-Functions:
+Default behaviour on executing the file from terminal is to print sin(x). The terminal size is not changed.
 
-terminal_resize(r,c): Resizes the terminal based on given input value of rows and columns
-
-read_terminal_size(): Returns the number of rows and columns in the current terminal. Returns 2 strings
-
-find_min(z): Finds and returns the smallest element in a list z
-
-find_max(z): Finds and returns the largest element in a list z
+Functions provided:
 
 make_list(lower,upper,size): Returns a list of length=size by discretizing all values between upper and lower
 
 make_sin_list(): Creates 2 lists a,b for domain and range of sin x. Return the two as lists
 
-rescale(n, size): Scales each value of the list n to an integer value corresponding to a value on the terminal screen(row or column). Returns a different list from the one provided to it
-
-sort(x,y): Sort list x and then swap y accordingly to take care of the possibility that x may not be a sorted list. Not used by default.
-
-plot_print(x,y): Prints a star in column x, row y
-
-plot(x,y): Takes 2 lists and prints the corresponding plot on the terminal with x along the x axis and y along the y axis
-
-convert_to_list(p): Converts the input p to a list in case it is a tuple and leaves it unchanged if it is a list. Returns an error otherwise
+plot(x,y,r,c): Takes 2 lists and prints the corresponding plot on the terminal with x along the x axis and y along the y axis. Takes optional input of rows and columns to resize the screen(ie the terminal window)which is set to a default value of 24 rows and 80 columns.
 
 """
 
@@ -39,76 +25,99 @@ import sys
 import math
 
 class InputListLengthError(Exception):
+     #Throws an error if both lists are not of the same length
      pass
 
 class IntervalLengthError(Exception):
+     #Throws an error if upper and lower limit of make_list have the same value
      pass
 
 class TextScatterPlot(object):
-  #def __init__():
-   #  pass
-    
-  def convert_to_list(self,p):
-     if type(p)==list:
-         return p
-     if type(p)==tuple:
-         z=[]
-         for i in p:
-            z.append(i)
-         return z
-     else:
-         raise TypeError
-   
-  def rescale(self,n,size):
-     if type(size)!=int and type(size)!= long:
-        raise TypeError
-     if size<0:
-        raise ValueError
-     minima=min(n)
-     maxima=max(n)
-     m=[]
-     for i in range(len(n)):
-         m.append(int(round((n[i]-minima)*size/maxima)))
-     return m
+     """
+        Functions provided with this class:
+  
+           terminal_resize(r,c): Resizes the terminal based on given input value of rows and columns
 
-  def plot_print(self,x1,y1,r):
-     if type(r)!=int and type(r)!= long:
-        raise TypeError
-     if x1==0:
-        x1=1
-     if y1==r:
-        y1=r-1
-     #Changing zero co-ordinate to 1 in order to print to screen
-     print("\033["+str(y1)+";"+str(x1)+"H*")
+           read_terminal_size(): Returns the number of rows and columns in the current terminal. Returns 2 strings
+  
+           rescale(n, size): Scales each value of the list n to an integer value corresponding to a value on the terminal screen
+
+           plot_print(x,y): Prints a star in column x, row y
+  
+           convert_to_list(p): Converts the input to a list in case it is a tuple and leaves it unchanged if it is a list.Else returns an error
 
 
-  def terminal_resize(self,r,c):
-     if type(r)!=int and type(r)!= long:
-        raise TypeError
-     if type(c)!=int and type(c)!= long:
-        raise TypeError
-     if r<0 or c<0:
-        raise ValueError
+     """
 
-     sys.stdout.write("\x1b[8;{rows};{cols}t".format(rows=r, cols=c)) # C command to resize terminal
+     #def __init__(self):
+         #  pass 
+     
+     def convert_to_list(self,p):
+          if type(p)==list:
+              return p
+          if type(p)==tuple:
+              z=[]
+              for i in p:
+                 z.append(i)
+              return z
+          else:
+              raise TypeError
+     
+     def rescale(self,n,size):
+          if type(size)!=int and type(size)!= long:
+             raise TypeError
+          if size<=0:
+             raise ValueError
+          minima=min(n)
+          maxima=max(n)
+          l=maxima-minima
+          m=[]
+          if l==0:  #If the list contains constant elements then show a line in the centre of the screen
+              for i in range(len(n)):
+                  m.append(size/2) 
+              return m         
+          for i in range(len(n)):
+              m.append(int(round((n[i]-minima)*size/l)))
+          return m
 
-  def read_terminal_size(self):
-     rows, columns = os.popen('stty size', 'r').read().split()
-     return rows, columns
+     def plot_print(self,x1,y1,r):
+          if type(r)!=int and type(r)!= long:
+              raise TypeError
+          if x1==0:
+              x1=1
+          if y1==r:
+              y1=r-1
+          #Changing zero co-ordinate to 1 in order to print to screen
+          print("\033["+str(y1)+";"+str(x1)+"H*")
 
-def plot(x,y):
+     def terminal_resize(self,r,c):
+          if type(r)!=int and type(r)!= long:
+             raise TypeError
+          if type(c)!=int and type(c)!= long:
+             raise TypeError
+          if r<0 or c<0:
+             raise ValueError
+          sys.stdout.write("\x1b[8;{rows};{cols}t".format(rows=r, cols=c)) # C command to resize terminal
+
+     def read_terminal_size(self):
+          rows, columns = os.popen('stty size', 'r').read().split()
+          return rows, columns
+          
+     #def __del__(self):
+          #pass
+
+def plot(x,y,r=24,c=80):
      plotter=TextScatterPlot()
      x=plotter.convert_to_list(x)
      y=plotter.convert_to_list(y)
      if len(x)!=len(y):
          msg="The lengths of the input arrays len(x)=%d and len(y)=%d don't match"%(len(x),len(y))
          raise InputListLengthError(msg)
-     r,c=plotter.read_terminal_size()
-     r=int(r)
-     c=int(c)
+     
      x=plotter.rescale(x,c)
      y=plotter.rescale(y,r)
      os.system('clear') # Clears the screen before printing
+     plotter.terminal_resize(r,c)
      for i in range(len(x)):
          plotter.plot_print(x[i],r-y[i],r)
 
@@ -127,11 +136,15 @@ def make_list(lower,upper,size): # Essentially performs the role of linspace in 
           indep_var.append(indep_var[i-1]+delta)
      return indep_var
 
-def make_sin_list():
+def terminal_size():
      plotter=TextScatterPlot()
      r,c=plotter.read_terminal_size()
      r=int(r)
      c=int(c)
+     return r,c
+     
+def make_sin_list():
+     r,c=terminal_size()
      a=make_list(0,2*math.pi,c)
      b=[]
      for i in a:
@@ -139,10 +152,8 @@ def make_sin_list():
      return a,b
      
 def main():
+     r,c=terminal_size()
      plotter=TextScatterPlot()
-     r,c=plotter.read_terminal_size()
-     r=int(r)
-     c=int(c)
      indep_var,dep_var = make_sin_list()
      indep_var= plotter.rescale(indep_var, c)
      dep_var= plotter.rescale(dep_var, r)
