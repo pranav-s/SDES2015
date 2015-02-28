@@ -41,42 +41,14 @@ import math
 class InputListLengthError(Exception):
      pass
 
+class IntervalLengthError(Exception):
+     pass
 
-def plot(x,y):
-     x=convert_to_list(x)
-     y=convert_to_list(y)
-     if len(x)!=len(y):
-         msg="The lengths of the input arrays x=%d and y=%d don't match"%(len(x),len(y))
-         raise InputListLengthError(msg)
-         
-     #sort(x,y)
-     r,c=read_terminal_size()
-     r=int(r)
-     c=int(c)
-     x=rescale(x,c)
-     y=rescale(y,r)
-     os.system('clear') # Clears the screen before printing
-     for i in range(len(x)):
-         plot_print(x[i],r-y[i],r)
-
-def sort(x,y):
-     if len(x)!=len(y):
-         msg="The lengths of the input arrays x=%d and y=%d don't match"%(len(x),len(y))
-         raise InputListLengthError(msg)
-     for i in range(len(x)-1):
-         minimum=x[i]
-         index=i
-         for j in range(i+1,len(x)):
-             
-             if(x[j]<minimum):
-                   minimum=x[j]
-                   index=j
-         
-         if index!=i:
-             x[i],x[index]=x[index],x[i]
-             y[i],y[index]=y[index],y[i]
-
-def convert_to_list(p):
+class TextScatterPlot(object):
+  #def __init__():
+   #  pass
+    
+  def convert_to_list(self,p):
      if type(p)==list:
          return p
      if type(p)==tuple:
@@ -86,8 +58,8 @@ def convert_to_list(p):
          return z
      else:
          raise TypeError
-
-def rescale(n,size):
+   
+  def rescale(self,n,size):
      if type(size)!=int and type(size)!= long:
         raise TypeError
      if size<0:
@@ -99,7 +71,7 @@ def rescale(n,size):
          m.append(int(round((n[i]-minima)*size/maxima)))
      return m
 
-def plot_print(x1,y1,r):
+  def plot_print(self,x1,y1,r):
      if type(r)!=int and type(r)!= long:
         raise TypeError
      if x1==0:
@@ -110,7 +82,7 @@ def plot_print(x1,y1,r):
      print("\033["+str(y1)+";"+str(x1)+"H*")
 
 
-def terminal_resize(r,c):
+  def terminal_resize(self,r,c):
      if type(r)!=int and type(r)!= long:
         raise TypeError
      if type(c)!=int and type(c)!= long:
@@ -120,20 +92,35 @@ def terminal_resize(r,c):
 
      sys.stdout.write("\x1b[8;{rows};{cols}t".format(rows=r, cols=c)) # C command to resize terminal
 
-def read_terminal_size():
+  def read_terminal_size(self):
      rows, columns = os.popen('stty size', 'r').read().split()
      return rows, columns
 
-def make_list(lower,upper,size):
+def plot(x,y):
+     plotter=TextScatterPlot()
+     x=plotter.convert_to_list(x)
+     y=plotter.convert_to_list(y)
+     if len(x)!=len(y):
+         msg="The lengths of the input arrays len(x)=%d and len(y)=%d don't match"%(len(x),len(y))
+         raise InputListLengthError(msg)
+     r,c=plotter.read_terminal_size()
+     r=int(r)
+     c=int(c)
+     x=plotter.rescale(x,c)
+     y=plotter.rescale(y,r)
+     os.system('clear') # Clears the screen before printing
+     for i in range(len(x)):
+         plotter.plot_print(x[i],r-y[i],r)
+
+def make_list(lower,upper,size): # Essentially performs the role of linspace in matplotlib
      if type(size)!=int and type(size)!= long:
         raise TypeError
      if size<0:
-        raise ValueError
-     
+        raise ValueError     
      if upper<lower:
          upper,lower=lower,upper
      if upper==lower:
-         return
+         raise IntervalLengthError("The interval length is zero")
      indep_var=[lower]
      delta=(upper-lower)/(size-1)
      for i in range(1,size):
@@ -141,7 +128,8 @@ def make_list(lower,upper,size):
      return indep_var
 
 def make_sin_list():
-     r,c=read_terminal_size()
+     plotter=TextScatterPlot()
+     r,c=plotter.read_terminal_size()
      r=int(r)
      c=int(c)
      a=make_list(0,2*math.pi,c)
@@ -151,14 +139,14 @@ def make_sin_list():
      return a,b
      
 def main():
-     r,c=read_terminal_size()
+     plotter=TextScatterPlot()
+     r,c=plotter.read_terminal_size()
      r=int(r)
      c=int(c)
      indep_var,dep_var = make_sin_list()
-     indep_var= rescale(indep_var, c)
-     dep_var= rescale(dep_var, r)
+     indep_var= plotter.rescale(indep_var, c)
+     dep_var= plotter.rescale(dep_var, r)
      plot(indep_var,dep_var)
 
 if __name__=='__main__': #Prints the sine function to the screen when called from the terminal
      main()
-     
