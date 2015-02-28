@@ -15,6 +15,10 @@ class TestTextPlotter(unittest.TestCase):
      def test_convert_to_list(self):
          self.assertEqual(self.plotter.convert_to_list((1,2,2,3,5)),[1,2,2,3,5])
          self.assertEqual(self.plotter.convert_to_list([1,2,2,3,7]),[1,2,2,3,7])
+         
+     def test_make_list(self):
+         self.assertEqual(text_plot.make_list(1,5,5),[1,2.0,3.0,4.0,5.0])
+         self.assertEqual(text_plot.make_list(5,1,3),[1,3.0,5.0])       
 
      def test_class_function_errors(self):
          a=[1,2,3]
@@ -31,10 +35,6 @@ class TestTextPlotter(unittest.TestCase):
          self.assertRaises(TypeError,text_plot.make_list,(2,5,'s'))
          self.assertRaises(text_plot.IntervalLengthError,lambda: text_plot.make_list(5,5,2))
          
-     def test_make_list(self):
-         self.assertEqual(text_plot.make_list(1,5,5),[1,2.0,3.0,4.0,5.0])
-         self.assertEqual(text_plot.make_list(5,1,3),[1,3.0,5.0])
-    
      def tearDown(self):
          del self.plotter
           

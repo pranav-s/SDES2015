@@ -116,8 +116,8 @@ def plot(x,y,r=24,c=80):
      
      x=plotter.rescale(x,c)
      y=plotter.rescale(y,r)
-     os.system('clear') # Clears the screen before printing
      plotter.terminal_resize(r,c)
+     os.system('clear') # Clears the screen before printing
      for i in range(len(x)):
          plotter.plot_print(x[i],r-y[i],r)
 
@@ -157,7 +157,7 @@ def main():
      indep_var,dep_var = make_sin_list()
      indep_var= plotter.rescale(indep_var, c)
      dep_var= plotter.rescale(dep_var, r)
-     plot(indep_var,dep_var)
+     plot(indep_var,dep_var,r,c)
 
 if __name__=='__main__': #Prints the sine function to the screen when called from the terminal
      main()
