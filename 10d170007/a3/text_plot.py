@@ -24,7 +24,7 @@ make_sin_list(): Creates 2 lists a,b for domain and range of sin x. Return the t
 
 rescale(n, size): Scales each value of the list n to an integer value corresponding to a value on the terminal screen(row or column). Returns a different list from the one provided to it
 
-sort(x,y): Sort list x and then swap y accordingly to take care of the possibility that x may not be a sorted list
+sort(x,y): Sort list x and then swap y accordingly to take care of the possibility that x may not be a sorted list. Not used by default.
 
 plot_print(x,y): Prints a star in column x, row y
 
@@ -38,12 +38,17 @@ import os
 import sys
 import math
 
+class InputListLengthError(Exception):
+     pass
+
+
 def plot(x,y):
      x=convert_to_list(x)
      y=convert_to_list(y)
      if len(x)!=len(y):
-         print 'Incorrect Input data'
-         return
+         msg="The lengths of the input arrays x=%d and y=%d don't match"%(len(x),len(y))
+         raise InputListLengthError(msg)
+         
      #sort(x,y)
      r,c=read_terminal_size()
      r=int(r)
@@ -56,14 +61,15 @@ def plot(x,y):
 
 def sort(x,y):
      if len(x)!=len(y):
-         return
+         msg="The lengths of the input arrays x=%d and y=%d don't match"%(len(x),len(y))
+         raise InputListLengthError(msg)
      for i in range(len(x)-1):
-         min=x[i]
+         minimum=x[i]
          index=i
          for j in range(i+1,len(x)):
              
-             if(x[j]<min):
-                   min=x[j]
+             if(x[j]<minimum):
+                   minimum=x[j]
                    index=j
          
          if index!=i:
@@ -86,27 +92,12 @@ def rescale(n,size):
         raise TypeError
      if size<0:
         raise ValueError
-     minima=find_min(n)
-     maxima=find_max(n)
+     minima=min(n)
+     maxima=max(n)
      m=[]
      for i in range(len(n)):
          m.append(int(round((n[i]-minima)*size/maxima)))
      return m
-
-
-def find_min(z):
-     minimum=z[0]
-     for i in z:
-        if i<minimum:
-          minimum=i
-     return minimum 
-
-def find_max(z):
-     maximum=z[0]
-     for i in z:
-        if i>maximum:
-          maximum=i
-     return maximum 
 
 def plot_print(x1,y1,r):
      if type(r)!=int and type(r)!= long:
@@ -158,8 +149,8 @@ def make_sin_list():
      for i in a:
         b.append(math.sin(i))
      return a,b
-
-if __name__=='__main__': #Prints the sine function to the screen when called from the terminal
+     
+def main():
      r,c=read_terminal_size()
      r=int(r)
      c=int(c)
@@ -167,3 +158,7 @@ if __name__=='__main__': #Prints the sine function to the screen when called fro
      indep_var= rescale(indep_var, c)
      dep_var= rescale(dep_var, r)
      plot(indep_var,dep_var)
+
+if __name__=='__main__': #Prints the sine function to the screen when called from the terminal
+     main()
+     
