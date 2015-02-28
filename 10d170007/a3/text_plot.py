@@ -16,7 +16,7 @@ make_list(lower,upper,size): Returns a list of length=size by discretizing all v
 
 make_sin_list(): Creates 2 lists a,b for domain and range of sin x. Return the two as lists
 
-plot(x,y,r,c): Takes 2 lists and prints the corresponding plot on the terminal with x along the x axis and y along the y axis. Takes optional input of rows and columns to resize the screen(ie the terminal window)which is set to a default value of 24 rows and 80 columns.
+plot(x,y,r,c): Takes 2 lists and prints the corresponding plot on the terminal with x along the x axis and y along the y axis. Takes optional input of rows and columns to resize the screen(ie the terminal window)which is otherwise set to a default value of 24 rows and 80 columns.
 
 """
 
@@ -77,7 +77,7 @@ class TextScatterPlot(object):
                   m.append(size/2) 
               return m         
           for i in range(len(n)):
-              m.append(int(round((n[i]-minima)*size/l)))
+              m.append(int(round((n[i]-minima)*float(size)/l)))
           return m
 
      def plot_print(self,x1,y1,r):
@@ -131,7 +131,7 @@ def make_list(lower,upper,size): # Essentially performs the role of linspace in 
      if upper==lower:
          raise IntervalLengthError("The interval length is zero")
      indep_var=[lower]
-     delta=(upper-lower)/(size-1)
+     delta=(upper-lower)/(float(size)-1)
      for i in range(1,size):
           indep_var.append(indep_var[i-1]+delta)
      return indep_var
