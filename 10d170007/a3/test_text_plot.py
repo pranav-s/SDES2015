@@ -10,6 +10,8 @@ class TestTextPlotter(unittest.TestCase):
 
      def test_rescale(self):
          self.assertEqual(self.plotter.rescale([1,3,5,7,9],5),[0,1,3,4,5])
+         self.assertEqual(self.plotter.rescale([2,4,6,8,10],6),[0,2,3,5,6])
+         self.assertEqual(self.plotter.rescale([23,56,34,13,30,35],30),[7,30,15,0,12,15])
          self.assertEqual(self.plotter.rescale([10,10,10,10,10],8),[4,4,4,4,4])
 
      def test_convert_to_list(self):
@@ -24,6 +26,7 @@ class TestTextPlotter(unittest.TestCase):
          a=[1,2,3]
          self.assertRaises(TypeError,self.plotter.rescale,(a,-2))
          self.assertRaises(TypeError,self.plotter.rescale,(a,2.3))
+         self.assertRaises(TypeError,self.plotter.rescale,(3,5))
          self.assertRaises(ValueError,lambda: self.plotter.terminal_resize(-24,80))
          self.assertRaises(TypeError,lambda: self.plotter.terminal_resize(53,43.5))
          self.assertRaises(TypeError,self.plotter.convert_to_list,('dft'))
@@ -34,6 +37,8 @@ class TestTextPlotter(unittest.TestCase):
          self.assertRaises(ValueError,lambda: text_plot.make_list(2,5,-2))
          self.assertRaises(TypeError,text_plot.make_list,(2,5,'s'))
          self.assertRaises(text_plot.IntervalLengthError,lambda: text_plot.make_list(5,5,2))
+         self.assertRaises(text_plot.InputListLengthError,lambda: text_plot.plot([1,2],[1]))
+         self.assertRaises(text_plot.InputListLengthError,lambda: text_plot.plot((3,4),(8,5,7)))
          
      def tearDown(self):
          del self.plotter

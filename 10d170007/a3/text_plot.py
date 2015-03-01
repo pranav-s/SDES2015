@@ -2,11 +2,11 @@
 
 """
 A text based plotter
-Takes two lists x & y and prints a sequence of stars on the terminal screen
+Takes two lists/tuples x & y and prints a sequence of stars on the terminal screen
 
 Args
-x- list
-y- list
+x- list/tuple
+y- list/tuple
 
 Default behaviour on executing the file from terminal is to print sin(x). The terminal size is not changed.
 
@@ -16,7 +16,9 @@ make_list(lower,upper,size): Returns a list of length=size by discretizing all v
 
 make_sin_list(): Creates 2 lists a,b for domain and range of sin x. Return the two as lists
 
-plot(x,y,r,c): Takes 2 lists and prints the corresponding plot on the terminal with x along the x axis and y along the y axis. Takes optional input of rows and columns to resize the screen(ie the terminal window)which is otherwise set to a default value of 24 rows and 80 columns.
+terminal_size(): Returns the number of rows and columns on the terminal screen as integers
+
+plot(x,y,r,c): Takes 2 lists/tuples and prints the corresponding plot on the terminal with x along the x axis and y along the y axis. Takes optional input of rows and columns to resize the screen(ie the terminal window)which is otherwise set to a default value of 24 rows and 80 columns.
 
 """
 
@@ -42,16 +44,13 @@ class TextScatterPlot(object):
   
            rescale(n, size): Scales each value of the list n to an integer value corresponding to a value on the terminal screen
 
-           plot_print(x,y): Prints a star in column x, row y
+           plot_print(x,y,r): Prints a star in column x, row y and takes the number of rows on the terminal screen as a parameter
   
            convert_to_list(p): Converts the input to a list in case it is a tuple and leaves it unchanged if it is a list.Else returns an error
 
 
      """
 
-     #def __init__(self):
-         #  pass 
-     
      def convert_to_list(self,p):
           if type(p)==list:
               return p
@@ -68,6 +67,8 @@ class TextScatterPlot(object):
              raise TypeError
           if size<=0:
              raise ValueError
+          if type(n)!=list:
+             raise TypeError
           minima=min(n)
           maxima=max(n)
           l=maxima-minima
@@ -91,9 +92,7 @@ class TextScatterPlot(object):
           print("\033["+str(y1)+";"+str(x1)+"H*")
 
      def terminal_resize(self,r,c):
-          if type(r)!=int and type(r)!= long:
-             raise TypeError
-          if type(c)!=int and type(c)!= long:
+          if type(r)!=int or type(c)!=int:
              raise TypeError
           if r<0 or c<0:
              raise ValueError
@@ -103,9 +102,7 @@ class TextScatterPlot(object):
           rows, columns = os.popen('stty size', 'r').read().split()
           return rows, columns
           
-     #def __del__(self):
-          #pass
-
+     
 def plot(x,y,r=24,c=80):
      plotter=TextScatterPlot()
      x=plotter.convert_to_list(x)
@@ -124,6 +121,10 @@ def plot(x,y,r=24,c=80):
 def make_list(lower,upper,size): # Essentially performs the role of linspace in matplotlib
      if type(size)!=int and type(size)!= long:
         raise TypeError
+     if type(upper)!=int and type(upper)!=long and type(upper)!=float:
+        raise TypeError
+     if type(lower)!=int and type(lower)!=long and type(lower)!=float:
+        raise TypeError   
      if size<0:
         raise ValueError     
      if upper<lower:
@@ -155,8 +156,8 @@ def main():
      r,c=terminal_size()
      plotter=TextScatterPlot()
      indep_var,dep_var = make_sin_list()
-     indep_var= plotter.rescale(indep_var, c)
-     dep_var= plotter.rescale(dep_var, r)
+     indep_var= plotter.rescale(indep_var,c)
+     dep_var= plotter.rescale(dep_var,r)
      plot(indep_var,dep_var,r,c)
 
 if __name__=='__main__': #Prints the sine function to the screen when called from the terminal
